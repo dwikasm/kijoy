@@ -2,6 +2,10 @@
 #include<iostream>
 #include<string>
 #include<bitset>
+#include<math.h>
+//#include<bits/stdc++.h>
+
+//using std::string;
 using namespace std;
 
 // FUNGSI SHIFT LEFT
@@ -28,7 +32,7 @@ string permutate(string input, int table[], int tablesize)
     return output;
 }
 
-// FUNSI XOR
+// FUNGSI XOR
 string xorr(string input1, string input2, int insize)
 {
 //    cout << insize << endl;
@@ -44,7 +48,27 @@ string xorr(string input1, string input2, int insize)
 // FUNGSI SBOX
 string sbox(string input, int table[4][16])
 {
-    return input;
+//    cout << "input = " << input << endl;
+    string kolom="",baris="", output="";
+    int kolomi=0, barisi=0, outputi;
+    kolom.append(input.substr(1,4));
+    baris.append(input.substr(0,1));
+    baris.append(input.substr(5,1));
+    for(int i=kolom.size()-1 , j=0; i>=0; i--, j++)
+    {
+        kolomi += (pow(2,j) * ((int)kolom[i]-48));
+    }
+    for(int i=baris.size()-1 , j=0; i>=0; i--, j++)
+    {
+        barisi+= (pow(2,j) * ((int)baris[i]-48));
+    }
+    outputi = table[barisi][kolomi];
+    output = bitset<4> (outputi).to_string();
+//    cout << kolom << " = " << kolomi << endl;
+//    cout << baris << " = " << barisi << endl;
+//    cout << "outputi = " << outputi << endl;
+//    cout << "output = " << output << endl;
+    return output;
 }
 
 // FUNGSI F
@@ -100,14 +124,27 @@ string f(string input1, string input2)
         7,11,4,1,9,12,14,2,0,6,10,13,15,3,5,8,
         2,1,14,7,4,10,8,13,15,12,9,0,3,5,6,11}
     };
-    string b[8]="";
+    int p[32] = {16,7,20,21,
+                29,12,28,17,
+                1,15,23,26,
+                5,18,31,10,
+                2,8,24,14,
+                32,27,3,9,
+                19,13,30,6,
+                22,11,4,25};
+    string output="";
     input1 = permutate(input1, E, sizeof(E)/sizeof(E[0]));
     input1 = xorr(input1, input2, 48);
     for(int i=0;i<8;i++)
     {
-        b[i]=sbox(input1.substr(i*6,6),s[i]);
+//        b[i]=sbox(input1.substr(i*6,6),s[i]);
+        output.append(sbox(input1.substr(i*6,6),s[i]));
     }
-    return input1;
+//    cout << input1 << endl;
+//    cout << output << endl;
+    output = permutate(output, p, sizeof(p)/sizeof(p[0]));
+//    cout << "output = " << output << endl;
+    return output;
 }
 
 int main()
@@ -121,7 +158,10 @@ int main()
             c[17] = "",
             d[17] = "",
             l[17] = "",
-            r[17] = "";
+            r[17] = "",
+            output_binary = "",
+            output = "",
+            temp = "";
     int PC1[56] =  {57,49,41,33,25,17,9,
                     1,58,50,42,34,26,18,
                     10,2,59,51,43,35,27,
@@ -146,6 +186,14 @@ int main()
                     59,51,43,35,27,19,11,3,
                     61,53,45,37,29,21,13,5,
                     63,55,47,39,31,23,15,7};
+    int IP1[64] =  {40,8,48,16,56,24,64,32,
+                    39,7,47,15,55,23,63,31,
+                    38,6,46,14,54,22,62,30,
+                    37,5,45,13,53,21,61,29,
+                    36,4,44,12,52,20,60,28,
+                    35,3,43,11,51,19,59,27,
+                    34,2,42,10,50,18,58,26,
+                    33,1,41,9,49,17,57,25};
     cout << "\t=== DES Encryptor ===" << endl;
     cout << "\nInput message (exactly 8 characters) :\n>";
 //    getline(cin, msg, '\n');
@@ -164,7 +212,6 @@ int main()
     for(int ctr=0; ctr<8; ctr++)
     {
         bitset<8> msg_bin(msg[ctr]);
-        string temp;
         temp = msg_bin.to_string();
         msg_binary.append(temp);
     }
@@ -230,6 +277,41 @@ int main()
     {
         l[i] = r[i-1];
         r[i] = xorr(l[i-1],f(r[i-1],k[i]),32);
-
+    }
+//    for(int i=0; i<17; i++)
+//    {
+//        cout << l[i] << endl;
+//        cout << r[i] << endl;
+//        cout << endl;
+//    }
+    cout << endl;
+    cout << r[16] << endl;
+    cout << l[16] << endl;
+    output_binary.append(r[16]);
+    output_binary.append(l[16]);
+    cout << "Output binary = " << output_binary << endl;
+    output_binary = permutate(output_binary, IP1, sizeof(IP1)/sizeof(IP1[0]));
+    cout << "Output binary = " << output_binary << endl;
+ //NGUBAH KE HEX
+    for(int i=0;i<output_binary.size();i+=4)
+    {
+        temp = output_binary.substr(i,4);
+        if (!temp.compare("0000")){output.append("0");}
+        else if (!temp.compare("0001")){output.append("1");}
+        else if (!temp.compare("0010")){output.append("2");}
+        else if (!temp.compare("0011")){output.append("3");}
+        else if (!temp.compare("0100")){output.append("4");}
+        else if (!temp.compare("0101")){output.append("5");}
+        else if (!temp.compare("0110")){output.append("6");}
+        else if (!temp.compare("0111")){output.append("7");}
+        else if (!temp.compare("1000")){output.append("8");}
+        else if (!temp.compare("1001")){output.append("9");}
+        else if (!temp.compare("1010")){output.append("A");}
+        else if (!temp.compare("1011")){output.append("B");}
+        else if (!temp.compare("1100")){output.append("C");}
+        else if (!temp.compare("1101")){output.append("D");}
+        else if (!temp.compare("1110")){output.append("E");}
+        else if (!temp.compare("1111")){output.append("F");}
+        cout << output << endl;
     }
 }
