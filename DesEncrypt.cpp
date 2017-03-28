@@ -1,12 +1,83 @@
-// PROGRAM UNTUK MELAKUKAN DES ENCRYPT
+// BLOCK CIPHER ENCRYPTION
+// MODE COUNTER
 #include<iostream>
 #include<string>
 #include<bitset>
 #include<math.h>
-//#include<bits/stdc++.h>
+#include<stdio.h>
+#include<stdlib.h>
 
-//using std::string;
 using namespace std;
+
+// FUNGSI ASCII TO BINARY
+string asciiToBinary(string input)
+{
+    string output="", temp;
+    for(int i=0; i<input.size(); i++)
+    {
+        bitset<8> bin(input[i]);
+        temp = bin.to_string();
+        output.append(temp);
+    }
+    return output;
+}
+
+// FUNGSI HEX TO BINARY
+string hexToBinary(string input)
+{
+    string output="";
+    for(int i=0; i<input.size(); i++)
+    {
+        switch(input[i])
+        {
+            case '0' : output.append("0000"); break;
+            case '1' : output.append("0001"); break;
+            case '2' : output.append("0010"); break;
+            case '3' : output.append("0011"); break;
+            case '4' : output.append("0100"); break;
+            case '5' : output.append("0101"); break;
+            case '6' : output.append("0110"); break;
+            case '7' : output.append("0111"); break;
+            case '8' : output.append("1000"); break;
+            case '9' : output.append("1001"); break;
+            case 'A' : output.append("1010"); break;
+            case 'B' : output.append("1011"); break;
+            case 'C' : output.append("1100"); break;
+            case 'D' : output.append("1101"); break;
+            case 'E' : output.append("1110"); break;
+            case 'F' : output.append("1111"); break;
+
+        }
+    }
+    return output;
+}
+
+// FUNGSI BINARY TO HEX
+string binaryToHex(string input)
+{
+    string output="", temp;
+    for(int i=0;i<input.size();i+=4)
+    {
+        temp = input.substr(i,4);
+        if (!temp.compare("0000")){output.append("0");}
+        else if (!temp.compare("0001")){output.append("1");}
+        else if (!temp.compare("0010")){output.append("2");}
+        else if (!temp.compare("0011")){output.append("3");}
+        else if (!temp.compare("0100")){output.append("4");}
+        else if (!temp.compare("0101")){output.append("5");}
+        else if (!temp.compare("0110")){output.append("6");}
+        else if (!temp.compare("0111")){output.append("7");}
+        else if (!temp.compare("1000")){output.append("8");}
+        else if (!temp.compare("1001")){output.append("9");}
+        else if (!temp.compare("1010")){output.append("A");}
+        else if (!temp.compare("1011")){output.append("B");}
+        else if (!temp.compare("1100")){output.append("C");}
+        else if (!temp.compare("1101")){output.append("D");}
+        else if (!temp.compare("1110")){output.append("E");}
+        else if (!temp.compare("1111")){output.append("F");}
+    }
+    return output;
+}
 
 // FUNGSI SHIFT LEFT
 string shiftleft(string input)
@@ -147,13 +218,12 @@ string f(string input1, string input2)
     return output;
 }
 
-int main()
+string des(string input1, string input2, int mode)
 {
-    string  msg = "",
-            msg_binary = "",
-            m = "",
-            key = "",
-            key_binary = "",
+//    cout << "INPUT1 = " << input1 <<endl;
+//    cout << "INPUT2 = " << input2 <<endl;
+//    cout << "MODE = " << mode <<endl;
+    string  m = "",
             k[17] = "",
             c[17] = "",
             d[17] = "",
@@ -194,60 +264,14 @@ int main()
                     35,3,43,11,51,19,59,27,
                     34,2,42,10,50,18,58,26,
                     33,1,41,9,49,17,57,25};
-    cout << "\t=== DES Encryptor ===" << endl;
-    cout << "\nInput message (exactly 8 characters) :\n>";
-//    getline(cin, msg, '\n');
-    msg = "COMPUTER";
-    cout << "\nInput key (exactly 16 hex characters) :\n>";
-//    getline(cin, key, '\n');
-    key = "0123456789ABCDEF";
-    cout << "\nMessage used : '";
-    for(int i=0; i<8; i++) cout << msg[i];
-    cout << "'" << endl;
-    cout << "Key used : '";
-    for(int i=0; i<16; i++) cout << key[i];
-    cout << "'" << endl;
-
-//    NGUBAH PLAINTEXT KE BINARY
-    for(int ctr=0; ctr<8; ctr++)
-    {
-        bitset<8> msg_bin(msg[ctr]);
-        temp = msg_bin.to_string();
-        msg_binary.append(temp);
-    }
-    cout << "Message in binary :\n> " << msg_binary << endl;
-    cout << "Message size = " << msg_binary.size() << endl;
-
-//    NGUBAH KEY KE BINARY
-    for(int ctr=0; ctr<16; ctr++)
-    {
-        switch(key[ctr])
-        {
-            case '0': key_binary.append("0000"); break;
-            case '1': key_binary.append("0001"); break;
-            case '2': key_binary.append("0010"); break;
-            case '3': key_binary.append("0011"); break;
-            case '4': key_binary.append("0100"); break;
-            case '5': key_binary.append("0101"); break;
-            case '6': key_binary.append("0110"); break;
-            case '7': key_binary.append("0111"); break;
-            case '8': key_binary.append("1000"); break;
-            case '9': key_binary.append("1001"); break;
-            case 'A': key_binary.append("1010"); break;
-            case 'B': key_binary.append("1011"); break;
-            case 'C': key_binary.append("1100"); break;
-            case 'D': key_binary.append("1101"); break;
-            case 'E': key_binary.append("1110"); break;
-            case 'F': key_binary.append("1111"); break;
-        }
-    }
-    cout << "key_binary : \n> " << key_binary << endl;
-    k[0] = permutate(key_binary, PC1, sizeof(PC1)/sizeof(PC1[0]));
-    cout << "k[0] :\n> " << k[0] <<endl;
+//    cout << "Message in binary :\n> " << input1 << endl;
+//    cout << "Key in binary : \n> " << input2 << endl;
+    k[0] = permutate(input2, PC1, sizeof(PC1)/sizeof(PC1[0]));
+//    cout << "k[0] :\n> " << k[0] <<endl;
     c[0] = k[0].substr(0,k[0].size()/2);
     d[0] = k[0].substr(k[0].size()/2,k[0].size()/2);
-    cout<< "c[0] = " << c[0]<<endl;
-    cout<< "d[0] = " << d[0]<<endl;
+//    cout<< "c[0] = " << c[0]<<endl;
+//    cout<< "d[0] = " << d[0]<<endl;
     for(int i=1; i<17; i++)
     {
         if(i==1 || i==2 || i==9 || i==16)
@@ -265,18 +289,21 @@ int main()
         k[i].append(c[i]);
         k[i].append(d[i]);
         k[i] = permutate(k[i], PC2, sizeof(PC2)/sizeof(PC2[0]));
-        cout << "k[" << i << "] = " << k[i] <<endl;
+//        cout << "k[" << i << "] = " << k[i] <<endl;
     }
-    m = permutate(msg_binary, IP, sizeof(IP)/sizeof(IP[0]));
+    m = permutate(input1, IP, sizeof(IP)/sizeof(IP[0]));
     l[0] = m.substr(0,m.size()/2);
     r[0] = m.substr(m.size()/2,m.size()/2);
-    cout << l[0] << endl;
-    cout << r[0] << endl;
-    cout << xorr(l[0],r[0],32) << endl;
+//    cout << l[0] << endl;
+//    cout << r[0] << endl;
+//    cout << xorr(l[0],r[0],32) << endl;
     for(int i=1; i<17; i++)
     {
         l[i] = r[i-1];
-        r[i] = xorr(l[i-1],f(r[i-1],k[i]),32);
+        if(mode == 1)
+            r[i] = xorr(l[i-1],f(r[i-1],k[i]),32);
+        else
+            r[i] = xorr(l[i-1],f(r[i-1],k[17-i]),32);
     }
 //    for(int i=0; i<17; i++)
 //    {
@@ -284,34 +311,63 @@ int main()
 //        cout << r[i] << endl;
 //        cout << endl;
 //    }
-    cout << endl;
-    cout << r[16] << endl;
-    cout << l[16] << endl;
+//    cout << endl;
+//    cout << r[16] << endl;
+//    cout << l[16] << endl;
     output_binary.append(r[16]);
     output_binary.append(l[16]);
-    cout << "Output binary = " << output_binary << endl;
+//    cout << "Output binary = " << output_binary << endl;
     output_binary = permutate(output_binary, IP1, sizeof(IP1)/sizeof(IP1[0]));
-    cout << "Output binary = " << output_binary << endl;
+//    cout << "Output binary = " << output_binary << endl;
  //NGUBAH KE HEX
-    for(int i=0;i<output_binary.size();i+=4)
+    output = binaryToHex(output_binary);
+//    cout << "Encrypted Message :\n> " << output << endl;
+    return output;
+}
+
+int main()
+{
+    string input, key, output="", ctr_binary, word, temp, c;
+    int mode, ctr=0;
+    cout << "=====BLOCK CIPHER ENCRYPTION WITH COUNTER MODE=====" << endl;
+    cout << "Modes : " << endl;
+    cout << "1. Encrypt" << endl;
+    cout << "2. Decrypt" << endl;
+    cout << "Choose what to do (1/2) :\n> ";
+    cin >> mode;
+    getchar();
+    if(mode ==1)
     {
-        temp = output_binary.substr(i,4);
-        if (!temp.compare("0000")){output.append("0");}
-        else if (!temp.compare("0001")){output.append("1");}
-        else if (!temp.compare("0010")){output.append("2");}
-        else if (!temp.compare("0011")){output.append("3");}
-        else if (!temp.compare("0100")){output.append("4");}
-        else if (!temp.compare("0101")){output.append("5");}
-        else if (!temp.compare("0110")){output.append("6");}
-        else if (!temp.compare("0111")){output.append("7");}
-        else if (!temp.compare("1000")){output.append("8");}
-        else if (!temp.compare("1001")){output.append("9");}
-        else if (!temp.compare("1010")){output.append("A");}
-        else if (!temp.compare("1011")){output.append("B");}
-        else if (!temp.compare("1100")){output.append("C");}
-        else if (!temp.compare("1101")){output.append("D");}
-        else if (!temp.compare("1110")){output.append("E");}
-        else if (!temp.compare("1111")){output.append("F");}
-        cout << output << endl;
+        cout << "Word to work with :\n> ";
+        getline(cin, input, '\n');
+    }else
+    {
+        cout << "Hex to work with :\n> ";
+        getline(cin, input, '\n');
     }
+    cout << "Key to use (Exactly 8 characters):\n> ";
+    getline(cin, key, '\n');
+    while(key.size() != ??
+    {
+        cout << "Wrong key. Try again (Exactly 8 characters):\n> ";
+        getline(cin, key, '\n');
+    }
+    if(mode == 1)
+        input = asciiToBinary(input);
+    else
+        input = hexToBinary(input);
+    key = asciiToBinary(key);
+//    for(int i=0; i<input.size(); i+=8)
+//    {
+//        word = input.substr(i,8);
+//        while(word.size()!=8)
+//            word.append(" ");
+//        word = asciiToBinary(word);
+//        temp = des(ctr_binary, key, mode);
+//        c = xorr(word, temp, sizeof(temp)/sizeof(temp[0]));
+//        output.append(c);
+//    }
+    output = des(input, key, mode);
+    cout << "Result :\n> ";
+    cout << output << endl;
 }
