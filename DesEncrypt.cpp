@@ -347,7 +347,7 @@ int main()
     }
     cout << "Key to use (Exactly 8 characters):\n> ";
     getline(cin, key, '\n');
-    while(key.size() != ??
+    while(key.size() != 8)
     {
         cout << "Wrong key. Try again (Exactly 8 characters):\n> ";
         getline(cin, key, '\n');
