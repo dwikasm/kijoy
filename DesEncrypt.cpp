@@ -79,6 +79,20 @@ string binaryToHex(string input)
     return output;
 }
 
+// FUNGSI HET TO ASCII
+string hexToAscii(string input)
+{
+    string output, temp;
+    char chr;
+    for(int i=0; i<input.size(); i+=2)
+    {
+        temp = input.substr(i,2);
+        chr = (char) (int)strtol(temp.c_str(), NULL, 16);
+        output.push_back(chr);
+    }
+    return output;
+}
+
 // FUNGSI SHIFT LEFT
 string shiftleft(string input)
 {
@@ -218,10 +232,10 @@ string f(string input1, string input2)
     return output;
 }
 
-string des(string input1, string input2, int mode)
+string des(string input, string key, int mode)
 {
-//    cout << "INPUT1 = " << input1 <<endl;
-//    cout << "INPUT2 = " << input2 <<endl;
+//    cout << "input = " << input <<endl;
+//    cout << "key = " << key <<endl;
 //    cout << "MODE = " << mode <<endl;
     string  m = "",
             k[17] = "",
@@ -264,9 +278,9 @@ string des(string input1, string input2, int mode)
                     35,3,43,11,51,19,59,27,
                     34,2,42,10,50,18,58,26,
                     33,1,41,9,49,17,57,25};
-//    cout << "Message in binary :\n> " << input1 << endl;
-//    cout << "Key in binary : \n> " << input2 << endl;
-    k[0] = permutate(input2, PC1, sizeof(PC1)/sizeof(PC1[0]));
+//    cout << "Message in binary :\n> " << input << endl;
+//    cout << "Key in binary : \n> " << key << endl;
+    k[0] = permutate(key, PC1, sizeof(PC1)/sizeof(PC1[0]));
 //    cout << "k[0] :\n> " << k[0] <<endl;
     c[0] = k[0].substr(0,k[0].size()/2);
     d[0] = k[0].substr(k[0].size()/2,k[0].size()/2);
@@ -291,7 +305,7 @@ string des(string input1, string input2, int mode)
         k[i] = permutate(k[i], PC2, sizeof(PC2)/sizeof(PC2[0]));
 //        cout << "k[" << i << "] = " << k[i] <<endl;
     }
-    m = permutate(input1, IP, sizeof(IP)/sizeof(IP[0]));
+    m = permutate(input, IP, sizeof(IP)/sizeof(IP[0]));
     l[0] = m.substr(0,m.size()/2);
     r[0] = m.substr(m.size()/2,m.size()/2);
 //    cout << l[0] << endl;
@@ -327,15 +341,20 @@ string des(string input1, string input2, int mode)
 
 int main()
 {
-    string input, key, output="", ctr_binary, word, temp, c;
-    int mode, ctr=0;
+    string input, key, output="", output_ascii="", ctr_binary, temp, c, p;
+    int mode=-1, ctr=0;
     cout << "=====BLOCK CIPHER ENCRYPTION WITH COUNTER MODE=====" << endl;
     cout << "Modes : " << endl;
     cout << "1. Encrypt" << endl;
     cout << "2. Decrypt" << endl;
     cout << "Choose what to do (1/2) :\n> ";
-    cin >> mode;
-    getchar();
+    while(1)
+    {
+        cin >> mode;
+        getchar();
+        if(mode==1||mode==2)break;
+        else cout << "Wrong mode. Try again :\n> ";
+    }
     if(mode ==1)
     {
         cout << "Word to work with :\n> ";
@@ -352,22 +371,53 @@ int main()
         cout << "Wrong key. Try again (Exactly 8 characters):\n> ";
         getline(cin, key, '\n');
     }
+//    cout << "input = '" << input << "'" <<endl;
+
     if(mode == 1)
+    {
+        while(input.size()%8!=0)
+        {
+            input.append(" ");
+        }
         input = asciiToBinary(input);
+    }
     else
+    {
         input = hexToBinary(input);
+    }
+
     key = asciiToBinary(key);
-//    for(int i=0; i<input.size(); i+=8)
-//    {
-//        word = input.substr(i,8);
-//        while(word.size()!=8)
-//            word.append(" ");
-//        word = asciiToBinary(word);
-//        temp = des(ctr_binary, key, mode);
-//        c = xorr(word, temp, sizeof(temp)/sizeof(temp[0]));
-//        output.append(c);
-//    }
-    output = des(input, key, mode);
-    cout << "Result :\n> ";
-    cout << output << endl;
+//    output = des(input, key, mode);
+//    cout << "DES BIASA -> Result :\n> ";
+//    cout << output << endl;
+//    cout << "input size = " << input.size() << endl;
+    for(int i=0; i<input.size(); i+=64, ctr++)
+    {
+//        cout << "ctr = " << ctr << endl;
+        ctr_binary = bitset<64>(ctr).to_string(); //to binary
+//        cout << "ctr binary = " << ctr_binary << endl;
+//        cout << "key = " << key << endl;
+        temp = des(ctr_binary,key,1);
+
+//        cout << "temp = " << temp << endl;
+        temp = hexToBinary(temp);
+//        cout << "temp = " << temp << endl;
+
+        p = input.substr(i,64);
+//        cout << "p = " << p << endl;
+
+        c = xorr(p,temp,64);
+//        cout << "c = " << c << endl;
+        c = binaryToHex(c);
+        output.append(c);
+    }
+    if(mode == 1)
+    {
+        cout << "CTR Result:\n> " << output;
+    }else
+    {
+        output_ascii = hexToAscii(output);
+        cout << "CTR Result:\n> " << output_ascii;
+    }
+
 }
