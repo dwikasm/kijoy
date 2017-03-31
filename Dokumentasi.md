@@ -482,3 +482,5 @@ string asciiToBinary(string input)
        </pre></code>
  
  
+## Referensi
+<p> http://dhost.info/pasjagor/des/ <p>
