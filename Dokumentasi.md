@@ -484,3 +484,4 @@ string asciiToBinary(string input)
  
 ## Referensi
 <p> http://dhost.info/pasjagor/des/ <p>
+<p> http://www.vbforums.com/showthread.php?781947-C-Simple-Chat-Program-In-a-Console-Window-(Winsock-amp-Multithreading) </p>
