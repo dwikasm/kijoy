@@ -51,9 +51,9 @@ for(int i=0;i<x;i++)
   ```
 
 ### Melakukan Send dan Receive
-<p>
+
   Program kami melakukan send terlebih dahulu, baru receive. Jadi jika user 1 telah menentukan nilai Xa, user tersebut harus menunggu user 2 menentukan nilai Xb nya. Jika kedua user telah menentukan nilai Xa dan Xb nya masing-masing, baru program ini dapat dilanjutkan 
-</p>
+
   ```C++
 //send ya
 string kon=to_string(ya);
