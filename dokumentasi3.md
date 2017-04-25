@@ -36,22 +36,55 @@ KIJ-F Kelompok 14 :
   </li>
   </ol>
 
-## Source Code Menghitung Ya & Yb
-<pre><code>
+## Source Code
+### Menghitung Ya & Yb
   ```C++
-  #include <iostream>
-
-  int main(int argc, char *argv[]) {
-
-    /* An annoying "Hello World" example */
-    for (auto i = 0; i < 0xFFFF; i++)
-      cout << "Hello, World!" << endl;
-
-    char c = '\n';
-    unordered_map <string, vector<string> > m;
-    m["key"] = "\\\\"; // this is an error
-
-    return -2e3 + 12l;
-  }
+int q,a,x,ya=1,yb=1,k=1;
+cout<<"Masukkan q: ";
+cin>>q;
+cout<<"Masukkan a: ";
+cin>>a;
+cout<<"Masukkan x: ";
+cin>>x;
+for(int i=0;i<x;i++)
+  ya=ya*a%q;
   ```
-</code></pre>
+
+### Melakukan Send dan Receive
+<p>
+  Program kami melakukan send terlebih dahulu, baru receive. Jadi jika user 1 telah menentukan nilai Xa, user tersebut harus menunggu user 2 menentukan nilai Xb nya. Jika kedua user telah menentukan nilai Xa dan Xb nya masing-masing, baru program ini dapat dilanjutkan 
+</p>
+  ```C++
+//send ya
+string kon=to_string(ya);
+cout << "ya adalah : " << kon << endl;
+send(client.socket, kon.c_str(), strlen(kon.c_str()), 0);
+
+//receive yb
+recv(client.socket, client.received_message, DEFAULT_BUFLEN, 0);
+cout << "received msg : " << client.received_message <<endl;
+
+//ubah string yb menjadi integer 
+string dummy = client.received_message;
+yb=stoi(dummy.substr(dummy.find(": ")+1));
+cout << "yb adalah : " << yb <<endl;
+  ```
+
+### Menghitung Key
+```C++
+//menghitung nilai key
+for(int i=0;i<x;i++) 
+  k=k*yb%q;
+cout << "Key yang dipakai adalah : " << k << endl;
+getchar();
+
+//mengubah int to string key
+string key = to_string(k);
+cout << "key = " << key << endl;
+
+//jika key < 8 karakter, akan ditambahkan karakter "0"
+while(key.size()<8) 
+  key.append("0");
+
+KEY = key;
+```
