@@ -12,4 +12,25 @@ KIJ-F Kelompok 14 :
 
 ## Cara Perhitungan
 <p>
-  
+  <ol>
+  <li> Tentukan variabel q yang berupa bilangan prima </li>
+  <li> Tentukan variabel a yang merupakan primitive root mod dari q</li> 
+  <li> Setiap user menentukan secret key: 
+    <ul>
+    <li>Xa < q </li>
+    <li>Xb < q </li>
+    </ul>
+  </li>
+  <li> Menghitung public key: 
+    <ul>
+    <li>Ya = a^Xa mod q</li>
+    <li>Yb = a^Xb mod q</li>
+    </ul>
+  </li>
+  <li> Setiap user saling mengirimkan hasil Ya untuk perhitungan key</li>
+  <li> Menghitung key: K = Yb^Xa mod q
+    <ul>
+    <li>K = Yb^Xa mod q</li>
+    <li>K = Ya^Xb mod q</li>
+    </ul>
+  </li>
