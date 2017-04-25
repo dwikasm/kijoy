@@ -17,8 +17,8 @@ KIJ-F Kelompok 14 :
   <li> Tentukan variabel a yang merupakan primitive root mod dari q</li> 
   <li> Setiap user menentukan secret key: 
     <ul>
-    <li>Xa < q </li>
-    <li>Xb < q </li>
+    <li>Xa < q. </li>
+    <li>Xb < q. </li>
     </ul>
   </li>
   <li> Menghitung public key: 
@@ -38,33 +38,20 @@ KIJ-F Kelompok 14 :
 
 ## Source Code Menghitung Ya & Yb
 <pre><code>
-  int q,a,x,ya=1,yb=1,k=1;
-  cout<<"Masukkan q: ";
-  cin>>q;
-  cout<<"Masukkan a: ";
-  cin>>a;
-  cout<<"Masukkan x: ";
-  cin>>x;
-  for(int i=0;i<x;i++)
-    ya=ya*a%q;
-</code></pre>
+  ```C++
+  #include <iostream>
 
-## Source Code Melakukan Send dan Receive
-<p>
-  Pada source code kami, terlihat user melakukan send terlebih dahulu baru melakukan receive agar ketika ada 1 user yang sudah mengetikkan kode Xa, user tersebut harus menunggu user lainnya mengetikkan nilai Xb nya baru kedua user dapat melanjutkan program tersebut
-</p>
-<pre><code>
-//send ya
-string kon=to_string(ya);
-cout << "ya adalah : " << kon << endl;
-send(client.socket, kon.c_str(), strlen(kon.c_str()), 0);
+  int main(int argc, char *argv[]) {
 
-//receive yb
-recv(client.socket, client.received_message, DEFAULT_BUFLEN, 0);
-cout << "received msg : " << client.received_message <<endl;
+    /* An annoying "Hello World" example */
+    for (auto i = 0; i < 0xFFFF; i++)
+      cout << "Hello, World!" << endl;
 
-//mengubah nilai yb dari string menjadi integer
-string dummy = client.received_message;
-yb=stoi(dummy.substr(dummy.find(": ")+1));
-cout << "yb adalah : " << yb <<endl;
+    char c = '\n';
+    unordered_map <string, vector<string> > m;
+    m["key"] = "\\\\"; // this is an error
+
+    return -2e3 + 12l;
+  }
+  ```
 </code></pre>
