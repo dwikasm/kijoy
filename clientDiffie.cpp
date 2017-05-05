@@ -1,13 +1,46 @@
-// BLOCK CIPHER ENCRYPTION
-// MODE COUNTER
-#include<iostream>
-#include<string>
+#include <winsock2.h>
+#define _WIN32_WINNT 0x502
+#include <ws2tcpip.h>
+#include <iostream>
+#include <string>
+#include <thread>
 #include<bitset>
 #include<math.h>
 #include<stdio.h>
 #include<stdlib.h>
 
+
 using namespace std;
+
+#pragma comment (lib, "Ws2_32.lib")
+
+#define DEFAULT_BUFLEN 512
+#define IP_ADDRESS "192.168.0.144"
+#define DEFAULT_PORT "3504"
+//#define KEY "COMPUTER"
+string KEY;
+
+struct client_type
+{
+    SOCKET socket;
+    int id;
+    char received_message[DEFAULT_BUFLEN];
+};
+
+string asciiToBinary(string input);
+string hexToBinary(string input);
+string binaryToHex(string input);
+string hexToAscii(string input);
+string shiftleft(string input);
+string permutate(string input, int table[], int tablesize);
+string xorr(string input1, string input2, int insize);
+string sbox(string input, int table[4][16]);
+string f(string input1, string input2);
+string des(string input, string key, int mode);
+string ctr(string input, int mode);
+int process_client(client_type &new_client);
+int main();
+
 
 // FUNGSI ASCII TO BINARY
 string asciiToBinary(string input)
@@ -120,7 +153,6 @@ string permutate(string input, int table[], int tablesize)
 // FUNGSI XOR
 string xorr(string input1, string input2, int insize)
 {
-//    cout << insize << endl;
     string output="";
     for(int i=0; i<insize; i++)
     {
@@ -133,7 +165,6 @@ string xorr(string input1, string input2, int insize)
 // FUNGSI SBOX
 string sbox(string input, int table[4][16])
 {
-//    cout << "input = " << input << endl;
     string kolom="",baris="", output="";
     int kolomi=0, barisi=0, outputi;
     kolom.append(input.substr(1,4));
@@ -149,10 +180,6 @@ string sbox(string input, int table[4][16])
     }
     outputi = table[barisi][kolomi];
     output = bitset<4> (outputi).to_string();
-//    cout << kolom << " = " << kolomi << endl;
-//    cout << baris << " = " << barisi << endl;
-//    cout << "outputi = " << outputi << endl;
-//    cout << "output = " << output << endl;
     return output;
 }
 
@@ -222,21 +249,14 @@ string f(string input1, string input2)
     input1 = xorr(input1, input2, 48);
     for(int i=0;i<8;i++)
     {
-//        b[i]=sbox(input1.substr(i*6,6),s[i]);
         output.append(sbox(input1.substr(i*6,6),s[i]));
     }
-//    cout << input1 << endl;
-//    cout << output << endl;
     output = permutate(output, p, sizeof(p)/sizeof(p[0]));
-//    cout << "output = " << output << endl;
     return output;
 }
 
 string des(string input, string key, int mode)
 {
-//    cout << "input = " << input <<endl;
-//    cout << "key = " << key <<endl;
-//    cout << "MODE = " << mode <<endl;
     string  m = "",
             k[17] = "",
             c[17] = "",
@@ -262,7 +282,7 @@ string des(string input, string key, int mode)
                     30,40,51,45,33,48,
                     44,49,39,56,34,53,
                     46,42,50,36,29,32};
-    int IP[64] =   {58,50,42,34,26,18,10,2, 
+    int IP[64] =   {58,50,42,34,26,18,10,2,
                     60,52,44,36,28,20,12,4,
                     62,54,46,38,30,22,14,6,
                     64,56,48,40,32,24,16,8,
@@ -278,14 +298,9 @@ string des(string input, string key, int mode)
                     35,3,43,11,51,19,59,27,
                     34,2,42,10,50,18,58,26,
                     33,1,41,9,49,17,57,25};
-//    cout << "Message in binary :\n> " << input << endl;
-//    cout << "Key in binary : \n> " << key << endl;
     k[0] = permutate(key, PC1, sizeof(PC1)/sizeof(PC1[0]));
-//    cout << "k[0] :\n> " << k[0] <<endl;
     c[0] = k[0].substr(0,k[0].size()/2);
     d[0] = k[0].substr(k[0].size()/2,k[0].size()/2);
-//    cout<< "c[0] = " << c[0]<<endl;
-//    cout<< "d[0] = " << d[0]<<endl;
     for(int i=1; i<17; i++)
     {
         if(i==1 || i==2 || i==9 || i==16)
@@ -299,18 +314,13 @@ string des(string input, string key, int mode)
             d[i] = shiftleft(d[i-1]);
             d[i] = shiftleft(d[i]);
         }
-//        cout << c[i] << " : " << d[i] <<endl;
         k[i].append(c[i]);
         k[i].append(d[i]);
         k[i] = permutate(k[i], PC2, sizeof(PC2)/sizeof(PC2[0]));
-//        cout << "k[" << i << "] = " << k[i] <<endl;
     }
     m = permutate(input, IP, sizeof(IP)/sizeof(IP[0]));
     l[0] = m.substr(0,m.size()/2);
     r[0] = m.substr(m.size()/2,m.size()/2);
-//    cout << l[0] << endl;
-//    cout << r[0] << endl;
-//    cout << xorr(l[0],r[0],32) << endl;
     for(int i=1; i<17; i++)
     {
         l[i] = r[i-1];
@@ -319,69 +329,18 @@ string des(string input, string key, int mode)
         else
             r[i] = xorr(l[i-1],f(r[i-1],k[17-i]),32);
     }
-//    for(int i=0; i<17; i++)
-//    {
-//        cout << l[i] << endl;
-//        cout << r[i] << endl;
-//        cout << endl;
-//    }
-//    cout << endl;
-//    cout << r[16] << endl;
-//    cout << l[16] << endl;
     output_binary.append(r[16]);
     output_binary.append(l[16]);
-//    cout << "Output binary = " << output_binary << endl;
     output_binary = permutate(output_binary, IP1, sizeof(IP1)/sizeof(IP1[0]));
-//    cout << "Output binary = " << output_binary << endl;
  //NGUBAH KE HEX
     output = binaryToHex(output_binary);
-//    cout << "Encrypted Message :\n> " << output << endl;
     return output;
 }
 
-int main()
+string ctr(string input, int mode)
 {
-    string input, key, output="", output_ascii="", ctr_binary, temp, c, p;
-    int mode=-1, ctr=0;
-    cout << "=====BLOCK CIPHER ENCRYPTION WITH COUNTER MODE=====" << endl;
-    cout << "Modes : " << endl;
-    cout << "1. Encrypt" << endl;
-    cout << "2. Decrypt" << endl;
-    cout << "Choose what to do (1/2) :\n> ";
-    while(1)
-    {
-        cin >> mode;
-        getchar();
-        if(mode==1||mode==2)break;
-        else cout << "Wrong mode. Try again :\n> ";
-    }
-    if(mode ==1)
-    {
-        cout << "Word to work with :\n> ";
-        getline(cin, input, '\n');
-    }else
-    {
-        cout << "Hex to work with :\n> ";
-        getline(cin, input, '\n');
-    }
-    cout << "Key to use (Exactly 8 characters):\n> ";
-    getline(cin, key, '\n');
-    
-	while(key.size() != 8)
-    {
-        cout << "Wrong key. Try again (Exactly 8 characters):\n> ";
-        getline(cin, key, '\n');
-    }
-    
-//    if(key.size()<8){
-//    	while(key.size()<8)
-//    		key.append(" ";)
-//	}else if(key.size()>8){
-//		key = key.substr(0,8);
-//	}
-
-//    cout << "input = '" << input << "'" <<endl;
-
+    string output="", output_ascii="", ctr_binary, temp, c, p;
+    int ctr=0;
     if(mode == 1)
     {
         while(input.size()%8!=0)
@@ -395,38 +354,216 @@ int main()
         input = hexToBinary(input);
     }
 
-    key = asciiToBinary(key);
-//    output = des(input, key, mode);
-//    cout << "DES BIASA -> Result :\n> ";
-//    cout << output << endl;
-//    cout << "input size = " << input.size() << endl;
+    string key;
+    key = asciiToBinary(KEY);
     for(int i=0; i<input.size(); i+=64, ctr++)
     {
-//        cout << "ctr = " << ctr << endl;
         ctr_binary = bitset<64>(ctr).to_string(); //to binary
-//        cout << "ctr binary = " << ctr_binary << endl;
-//        cout << "key = " << key << endl;
         temp = des(ctr_binary,key,1);
-
-//        cout << "temp = " << temp << endl;
         temp = hexToBinary(temp);
-//        cout << "temp = " << temp << endl;
-
         p = input.substr(i,64);
-//        cout << "p = " << p << endl;
-
         c = xorr(p,temp,64);
-//        cout << "c = " << c << endl;
         c = binaryToHex(c);
         output.append(c);
     }
     if(mode == 1)
     {
-        cout << "CTR Result:\n> " << output;
+        return output;
     }else
     {
         output_ascii = hexToAscii(output);
-        cout << "CTR Result:\n> " << output_ascii;
+        return output_ascii;
     }
 
+}
+
+int process_client(client_type &new_client)
+{
+    string klayen, decrypted, dummy;
+    while (1)
+    {
+        memset(new_client.received_message, 0, DEFAULT_BUFLEN);
+
+        if (new_client.socket != 0)
+        {
+            int iResult = recv(new_client.socket, new_client.received_message, DEFAULT_BUFLEN, 0);
+
+            dummy = new_client.received_message;
+            klayen = dummy.substr(0,dummy.find(":")+1);
+            decrypted = ctr(dummy.substr(dummy.find(": ")+1), 2);
+            klayen = klayen.append(decrypted);
+
+            if (iResult != SOCKET_ERROR)
+//                cout << new_client.received_message << endl;
+                cout << klayen<< endl;
+            else
+            {
+                cout << "recv() failed: " << WSAGetLastError() << endl;
+                break;
+            }
+        }
+    }
+
+    if (WSAGetLastError() == WSAECONNRESET)
+        cout << "The server has disconnected" << endl;
+
+    return 0;
+}
+int stoi(const char *s)
+{
+    int i;
+    i = 0;
+    while(*s >= '0' && *s <= '9')
+    {
+        i = i * 10 + (*s - '0');
+        s++;
+    }
+    return i;
+}
+int main()
+{
+    WSAData wsa_data;
+    struct addrinfo *result = NULL, *ptr = NULL, hints;
+    string sent_message = "";
+    client_type client = { INVALID_SOCKET, -1, "" };
+    int iResult = 0;
+    string message;
+
+    cout << "Starting Client...\n";
+
+    // Initialize Winsock
+    iResult = WSAStartup(MAKEWORD(2, 2), &wsa_data);
+    if (iResult != 0) {
+        cout << "WSAStartup() failed with error: " << iResult << endl;
+        return 1;
+    }
+
+    ZeroMemory(&hints, sizeof(hints));
+    hints.ai_family = AF_UNSPEC;
+    hints.ai_socktype = SOCK_STREAM;
+    hints.ai_protocol = IPPROTO_TCP;
+
+    cout << "Connecting...\n";
+
+    // Resolve the server address and port
+    iResult = getaddrinfo(static_cast<LPCTSTR>(IP_ADDRESS), DEFAULT_PORT, &hints, &result);
+    if (iResult != 0) {
+        cout << "getaddrinfo() failed with error: " << iResult << endl;
+        WSACleanup();
+        system("pause");
+        return 1;
+    }
+
+    // Attempt to connect to an address until one succeeds
+    for (ptr = result; ptr != NULL; ptr = ptr->ai_next) {
+
+        // Create a SOCKET for connecting to server
+        client.socket = socket(ptr->ai_family, ptr->ai_socktype,
+            ptr->ai_protocol);
+        if (client.socket == INVALID_SOCKET) {
+            cout << "socket() failed with error: " << WSAGetLastError() << endl;
+            WSACleanup();
+            system("pause");
+            return 1;
+        }
+
+        // Connect to server.
+        iResult = connect(client.socket, ptr->ai_addr, (int)ptr->ai_addrlen);
+        if (iResult == SOCKET_ERROR) {
+            closesocket(client.socket);
+            client.socket = INVALID_SOCKET;
+            continue;
+        }
+        break;
+    }
+
+    freeaddrinfo(result);
+
+    if (client.socket == INVALID_SOCKET) {
+        cout << "Unable to connect to server!" << endl;
+        WSACleanup();
+        system("pause");
+        return 1;
+    }
+
+    cout << "Successfully Connected" << endl;
+
+    //Obtain id from server for this client;
+    recv(client.socket, client.received_message, DEFAULT_BUFLEN, 0);
+    message = client.received_message;
+
+    string encrypted;
+    if (message != "Server is full")
+    {
+
+        client.id = atoi(client.received_message);
+
+        int q,a,x,ya=1,yb=1,k=1;
+        cout<<"Masukkan q: ";
+        cin>>q;
+        cout<<"Masukkan a: ";
+        cin>>a;
+        cout<<"Masukkan x: ";
+        cin>>x;
+        for(int i=0;i<x;i++)ya=ya*a%q;
+        //send ya
+        string kon=to_string(ya);
+        cout << "ya adalah : " << kon << endl;
+        send(client.socket, kon.c_str(), strlen(kon.c_str()), 0);
+        //recv yb
+        recv(client.socket, client.received_message, DEFAULT_BUFLEN, 0);
+        cout << "received msg : " << client.received_message <<endl;
+
+        string dummy = client.received_message;
+        yb=stoi(dummy.substr(dummy.find(": ")+1));
+
+        cout << "yb adalah : " << yb <<endl;
+        for(int i=0;i<x;i++) k=k*yb%q;
+        cout << "Key yang dipakai adalah : " << k << endl;
+        getchar();
+        //int to string k
+        string key = to_string(k);
+        cout << "key = " << key << endl;
+        //if <8 ++++
+        while(key.size()<8) key.append("0");
+        //KEY = key;
+        KEY = key;
+
+//        thread my_thread(process_client, client);
+        thread my_thread(process_client, ref(client));
+
+        while (1)
+        {
+            getline(cin, sent_message);
+            encrypted = ctr(sent_message, 1);
+//            iResult = send(client.socket, sent_message.c_str(), strlen(sent_message.c_str()), 0);
+            iResult = send(client.socket, encrypted.c_str(), strlen(encrypted.c_str()), 0);
+
+            if (iResult <= 0)
+            {
+                cout << "send() failed: " << WSAGetLastError() << endl;
+                break;
+            }
+        }
+
+        //Shutdown the connection since no more data will be sent
+        my_thread.detach();
+    }
+    else
+        cout << client.received_message << endl;
+
+    cout << "Shutting down socket..." << endl;
+    iResult = shutdown(client.socket, SD_SEND);
+    if (iResult == SOCKET_ERROR) {
+        cout << "shutdown() failed with error: " << WSAGetLastError() << endl;
+        closesocket(client.socket);
+        WSACleanup();
+        system("pause");
+        return 1;
+    }
+
+    closesocket(client.socket);
+    WSACleanup();
+    system("pause");
+    return 0;
 }

@@ -1,5 +1,5 @@
 #include <winsock2.h>
-#define _WIN32_WINNT 0x501
+#define _WIN32_WINNT 0x502
 #include <ws2tcpip.h>
 #include <iostream>
 #include <string>
@@ -488,10 +488,12 @@ int main()
         cout << "Enter your super secret key (8 characters) :\n> ";
         getline(cin, KEY, '\n');
 
-        if(KEY.size()!=8){
+        /*if(KEY.size()!=8){
             cout << "Wrong key, try again (8 characters) :\n> ";
             getline(cin, KEY, '\n');
-        }
+        }*/
+
+
 
         client.id = atoi(client.received_message);
 
