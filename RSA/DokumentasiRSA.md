@@ -47,18 +47,52 @@ KIJ-F Kelompok 14 :
 ### Skenario
 <p>
   Di dalam skenario ini akan ada 2 partisipan, yaitu Alice dan Bob yang akan melakukan pertukaran informasi. 
-  Berikut adalah skenario bagaimana public-key cryptosystem bekerja  :
-  <li> 1. Kedua partisipan (Alice dan Bob) setuju untuk menggunakan public-key cryptosystem. </li>
-  <li> 2. Bob akan mengirimkan public key-nya kepada Alice. </li>
-  <li> 3. Alice akan meng-encrypt pesan yang dibuatkan dengan menggunakan public
+  Berikut adalah skenario bagaimana public-key crypto sistem bekerja  :
+  <li> Pertama-tama, kedua partisipan (Alice dan Bob) setuju untuk menggunakan public-key cryptosystem. 
+  <li> Lalu, si Bob akan mengirimkan public key-nya kepada Alice. 
+  <li> Lalu, si Alice akan meng-encrypt pesan yang dibuatkan dengan menggunakan public
      key milik Bob dan mengirimkan pesan yang sudah di-encrypt kepada 
-     Bob. </li>
-  <li> 4. Bob men-decrypt pesan dari Alice menggunakan private key
+     Bob. 
+  <li> Pada akhirnya, si Bob men-decrypt pesan dari Alice menggunakan private key
      miliknya.</li>
-</p
+</p>
 
+### Notasi Matematika
+<p>
+  Di dalam algoritma RSA terdapat beberapa notasi matematika, yaitu sebagai berikut :
+</p>
+## Modulo
+<p>
+  Seperti yang kita ketahui , Modulo dinotasikan menjadi 'x mod m' atau 'x % m' dalam beberapa
+  bahasa komputer. Sebagai contoh :
+   <li>10 mod 5 = 0 karena 5 habis membagi 10 </li>
+   <li>9 mod 7 = 2 karena 9 / (7 * 1) menyisakan 2</li>
+</p>
 
-  
-  
-  
-  
+## Z/mZ
+<p>
+  Operasi yang termasuk kedalam Z/mZ yakni penjumlahan, pengurangan,pembagian dan perkalian. Tidak hanya itu, terdapat Inverse dan Units
+  juga. Dimana Inversi merupakan sebuah elemen dalam Z/mZ seperti A, memiliki sebuah inverse B
+  jika dan hanya jika [A]x[B] = [1]. Dan Units merupakan setiap elemen dalam Z/mZ yang memiliki inverse adalah sebuah
+  unit.
+</p>
+
+## GCD (A,B) - Greatest Common Divisor
+<p>
+  Operasi GCD (A,B) ini dapat ditemukan dengan menggunakan algoritma extended euclid. Apabila
+  GCD(A,B) = 1 maka A and B dalah coprime satu sama lainnya (dengan kata lain, A dan B adalah relatively prime).
+</p>
+
+## Pow (A,B) 
+<p>
+   Operasi ini merupakan operasi pangkat yang dimana menggunakan notasi '^'.
+   Sebagai contoh : a pangkat b =  a^b 
+</p>
+
+## Euler's phi function 
+<p>
+  Ini merupakan fungsi untuk sebuah total bilangan unit dalam Z/mZ. Dimana terdapat teorema sbb :
+  <li> Jika p = bilangan prima , maka phi (p) = p - 1 ; p dan phi(p) adalah (contoh: gcd(p,phi(p)) = 1), contoh : phi(11) = 10 </li>
+  <li> phi(m*n) = phi(m) * phi (n), contoh : phi(840) = phi(8) * phi(105) </li>
+  <li> phi(p^a) = (p^a) - p^(a-1) </li>
+ </p>
