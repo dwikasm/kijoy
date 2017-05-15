@@ -61,7 +61,8 @@ KIJ-F Kelompok 14 :
 <p>
   Di dalam algoritma RSA terdapat beberapa notasi matematika, yaitu sebagai berikut :
 </p>
-## Modulo
+
+#### <li> Modulo </li>
 <p>
   Seperti yang kita ketahui , Modulo dinotasikan menjadi 'x mod m' atau 'x % m' dalam beberapa
   bahasa komputer. Sebagai contoh :
@@ -69,7 +70,7 @@ KIJ-F Kelompok 14 :
    <li>9 mod 7 = 2 karena 9 / (7 * 1) menyisakan 2</li>
 </p>
 
-## Z/mZ
+#### <li> Z/mZ </li>
 <p>
   Operasi yang termasuk kedalam Z/mZ yakni penjumlahan, pengurangan,pembagian dan perkalian. Tidak hanya itu, terdapat Inverse dan Units
   juga. Dimana Inversi merupakan sebuah elemen dalam Z/mZ seperti A, memiliki sebuah inverse B
@@ -77,22 +78,69 @@ KIJ-F Kelompok 14 :
   unit.
 </p>
 
-## GCD (A,B) - Greatest Common Divisor
+#### <li> GCD (A,B) - Greatest Common Divisor </li>
 <p>
   Operasi GCD (A,B) ini dapat ditemukan dengan menggunakan algoritma extended euclid. Apabila
   GCD(A,B) = 1 maka A and B dalah coprime satu sama lainnya (dengan kata lain, A dan B adalah relatively prime).
 </p>
 
-## Pow (A,B) 
+#### <li> Pow (A,B) </li>
 <p>
    Operasi ini merupakan operasi pangkat yang dimana menggunakan notasi '^'.
    Sebagai contoh : a pangkat b =  a^b 
 </p>
 
-## Euler's phi function 
+#### <li> Euler's phi function </li>
 <p>
   Ini merupakan fungsi untuk sebuah total bilangan unit dalam Z/mZ. Dimana terdapat teorema sbb :
   <li> Jika p = bilangan prima , maka phi (p) = p - 1 ; p dan phi(p) adalah (contoh: gcd(p,phi(p)) = 1), contoh : phi(11) = 10 </li>
   <li> phi(m*n) = phi(m) * phi (n), contoh : phi(840) = phi(8) * phi(105) </li>
   <li> phi(p^a) = (p^a) - p^(a-1) </li>
  </p>
+
+### Pembuatan Key
+<p>
+  Dikarenakan si Alice ingin Bob mengirimnya sebuah pesan melalui jalur yang aman, maka si Alice akan memberikan public keynya kepada     Bob dan menyimpan private key untuk dirinya sendiri. Oleh karena itu, berikut ini adalah langkah-langkah dalam pembuatan key :
+  <li> Pertama-tama, pilih 2 bilangan prima besar seperti p,q dimana p tidak sama
+     dengan q.
+  <li> Kedua, hitunglah M, dimana M = p x q
+  <li> Ketiga, hitunglah phi(M), dimana phi(M) = phi(p) * phi(q)
+  <li> Keempat, pilihlah sebuah nilai integer 'e' dimana e lebih lecil dari phi(M) dan lebih besar dari 1, dan 'e' serta
+     phi(M) adalah coprime
+  <li> Kelima, hitunglah 'd' integer sehingga (d * e) mod M = 1
+  <li> Pada akhirnya, (M,e) adalah public key dimana M adalah modulo dan e adalah
+     eksponen encryption; serta (M,d) adalah private key dimana M adalah modulo dan d adalah
+     eksponen decryption. </li>   
+</p>
+
+### Cara Enkripsi Pesan
+<p>
+  Sebagai contoh, si Alice akan mengirim pesan "z" kepada Bob, maka cara mengenkripsi pesannya yaitu:
+   <li> Pertama-tama, 
+     Bob harus membuat key dirinya sehingga Bob memiliki private dan 
+     public keys. Dimana private key = (M,d) dan public key  = (M,e)
+  <li> Kedua, 
+     Mengubah pesan yang berupa plaintext menjadi bilangan. Sebuah contoh mudah adalah 
+     mapping A = 1, B = 2 ... Z = 26. 
+     Sehingga z = 26
+  <li> Ketiga, 
+     Mencari nilai C, dimana c merupakan bilangan yang ter-enkripsi. 
+     Nilai C didapat dari 8^e (mod M)
+  <li> Pada akhirnya, Alice mengirimkan bilangan tersebut kepada Alice sehingga Alice 
+     dapat melakukan decode ulang menggunakan private keynya.</li> 
+</p>
+
+### Cara Dekripsi Pesan
+<p>
+  Sebagai contoh,  Bob menerima sebuah pesan sudah ter-enkripsi, maka Bob akan mendekripsikan menggunakan tahapan-tahapan berikut:
+  <li> Pertama-tama, 
+     Bob sudah mempunyai private key dari langkah-langkah memperoleh Key (M,d)
+  <li> Kedua,  
+     Mencari nilai N (merupakan bilangan) dengan menggunakan konversi table alphabet untuk mengubah N menjadi karakter yang direpresentasikannya.
+     Nilai N didapat dari C^d (mod M) </li>
+</p>
+
+### Referensi
+<li> https://id.wikipedia.org/wiki/RSA#Pembuatan_Kunci </li>
+<li> Rivest R.L., Shamir A., Adleman L. "A Method for Obtaining Digital
+     Signatures and Public-Key Cryptosystems. MIT: Massachusetts. 1977.</li>
