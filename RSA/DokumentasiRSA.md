@@ -62,7 +62,7 @@ KIJ-F Kelompok 14 :
   Di dalam algoritma RSA terdapat beberapa notasi matematika, yaitu sebagai berikut :
 </p>
 
-#### <li> Modulo </li>
+#### I. Modulo 
 <p>
   Seperti yang kita ketahui , Modulo dinotasikan menjadi 'x mod m' atau 'x % m' dalam beberapa
   bahasa komputer. Sebagai contoh :
@@ -70,7 +70,7 @@ KIJ-F Kelompok 14 :
    <li>9 mod 7 = 2 karena 9 / (7 * 1) menyisakan 2</li>
 </p>
 
-#### <li> Z/mZ </li>
+#### II. Z/mZ 
 <p>
   Operasi yang termasuk kedalam Z/mZ yakni penjumlahan, pengurangan,pembagian dan perkalian. Tidak hanya itu, terdapat Inverse dan Units
   juga. Dimana Inversi merupakan sebuah elemen dalam Z/mZ seperti A, memiliki sebuah inverse B
@@ -78,19 +78,19 @@ KIJ-F Kelompok 14 :
   unit.
 </p>
 
-#### <li> GCD (A,B) - Greatest Common Divisor </li>
+#### III. GCD (A,B) - Greatest Common Divisor 
 <p>
   Operasi GCD (A,B) ini dapat ditemukan dengan menggunakan algoritma extended euclid. Apabila
   GCD(A,B) = 1 maka A and B dalah coprime satu sama lainnya (dengan kata lain, A dan B adalah relatively prime).
 </p>
 
-#### <li> Pow (A,B) </li>
+#### IV. Pow (A,B) 
 <p>
    Operasi ini merupakan operasi pangkat yang dimana menggunakan notasi '^'.
    Sebagai contoh : a pangkat b =  a^b 
 </p>
 
-#### <li> Euler's phi function </li>
+#### V. Euler's phi function
 <p>
   Ini merupakan fungsi untuk sebuah total bilangan unit dalam Z/mZ. Dimana terdapat teorema sbb :
   <li> Jika p = bilangan prima , maka phi (p) = p - 1 ; p dan phi(p) adalah (contoh: gcd(p,phi(p)) = 1), contoh : phi(11) = 10 </li>
