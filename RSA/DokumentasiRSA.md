@@ -84,16 +84,6 @@ KIJ-F Kelompok 14 :
   GCD(A,B) = 1 maka A and B dalah coprime satu sama lainnya (dengan kata lain, A dan B adalah relatively prime).
 </p>
 
-<p> Source Code:
-``` 
-def gcd(a, b):
-    while b != 0:
-        a, b = b, a % b
-    return a
-```
-
-</p>
-
 #### IV. Pow (A,B) 
 <p>
    Operasi ini merupakan operasi pangkat yang dimana menggunakan notasi '^'.
@@ -149,6 +139,86 @@ def gcd(a, b):
      Mencari nilai N (merupakan bilangan) dengan menggunakan konversi table alphabet untuk mengubah N menjadi karakter yang direpresentasikannya.
      Nilai N didapat dari C^d (mod M) </li>
 </p>
+
+### Source Code :
+#### I. Multiplicative inverse
+```
+def multiplicative_inverse(e, m):
+    d = x1 = 0
+    x2 = y1 = 1
+    temp_m = m
+
+    while e > 0:
+        temp1 = temp_m/e
+        temp2 = temp_m - temp1 * e
+        temp_m = e
+        e = temp2
+
+        x = x2 - temp1 * x1
+        y = d - temp1 * y1
+
+        x2 = x1
+        x1 = x
+        d = y1
+        y1 = y
+
+    if temp_m == 1:
+        return d + m
+```
+#### II. GCD
+```
+def gcd(a, b):
+    while b != 0:
+        a, b = b, a % b
+    return a
+```
+
+#### III. Mencari apakah Bilangan yang diipunt Bilangan Prima
+```
+def is_prime(num):
+    if num == 2:
+        return True
+    if num < 2 or num % 2 == 0:
+        return False
+    for n in xrange(3, int(num**0.5)+2, 2):
+        if num % n == 0:
+            return False
+    return True
+```
+
+#### IV. Pembuatan Key
+```
+def buat_key(p, q):
+    if not (is_prime(p) and is_prime(q)):
+        raise ValueError('Kedua angka harus prima')
+    elif p == q:
+        raise ValueError('p dan q tidak boleh sama')
+    n = p * q
+    m = (p-1) * (q-1)
+    e = random.randrange(1, m)
+    g = gcd(e, m)
+    while g != 1:
+        e = random.randrange(1, m)
+        g = gcd(e, m)
+    d = multiplicative_inverse(e, m)
+    return ((e, n), (d, n))
+```
+
+#### V. Enkripsi Pesan
+```
+def encrypt(pk, plaintext):
+    key, n = pk
+    cipher = [(ord(char) ** key) % n for char in plaintext]
+    return cipher
+```
+
+#### VI. Dekripsi Pesan
+```
+def decrypt(pk, chipertext):
+    key, n = pk
+    plain = [chr((char ** key) % n) for char in chipertext]
+    return ''.join(plain)
+```
 
 ### Referensi
 <li> https://id.wikipedia.org/wiki/RSA#Pembuatan_Kunci </li>
