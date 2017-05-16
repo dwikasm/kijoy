@@ -84,6 +84,16 @@ KIJ-F Kelompok 14 :
   GCD(A,B) = 1 maka A and B dalah coprime satu sama lainnya (dengan kata lain, A dan B adalah relatively prime).
 </p>
 
+<p> Source Code:
+``` 
+def gcd(a, b):
+    while b != 0:
+        a, b = b, a % b
+    return a
+```
+
+</p>
+
 #### IV. Pow (A,B) 
 <p>
    Operasi ini merupakan operasi pangkat yang dimana menggunakan notasi '^'.
