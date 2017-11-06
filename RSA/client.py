@@ -71,8 +71,8 @@ def decrypt(pk, chipertext):
 
 if __name__ == '__main__':
     s = socket.socket()
-    host = 'localhost'
-    port = 12221
+    host = '192.168.0.102'
+    port = 8888
 
     s.connect((host, port))
     print 'Connected to', host

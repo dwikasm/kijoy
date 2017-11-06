@@ -77,8 +77,8 @@ def decrypt(pk, chipertext):
 
 if __name__ == '__main__':
     s = socket.socket()
-    host = 'localhost'
-    port = 12221
+    host = '192.168.0.103'
+    port = 8888
     s.bind((host, port))
 
     s.listen(5)
